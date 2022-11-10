@@ -67,6 +67,12 @@ async function run(){
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
+        app.get('/myreviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const review = await reviewCollection.findOne(query);
+            res.send(review);
+        });
 
         // my reviews data
         app.get('/myreviews', async (req, res) => {
@@ -82,7 +88,31 @@ async function run(){
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
-
+        // update
+        app.patch("/myreviews/:id", async (req, res) => {
+            const { id } = req.params;
+          
+            try {
+              const result = await reviewCollection.updateOne({ _id: ObjectId(id) }, { $set: req.body });
+          
+              if (result.matchedCount) {
+                res.send({
+                  success: true,
+                  message: `successfully updated ${req.body.message}`,
+                });
+              } else {
+                res.send({
+                  success: false,
+                  error: "Couldn't update  the product",
+                });
+              }
+            } catch (error) {
+              res.send({
+                success: false,
+                error: error.message,
+              });
+            }
+          });
         // DELETE
         app.delete('/myreviews/:id', async (req, res) => {
             const id = req.params.id;
