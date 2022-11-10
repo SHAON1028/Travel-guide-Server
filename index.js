@@ -21,6 +21,7 @@ async function run(){
     try{
         // collection
         const serviceCollection = client.db('Travel').collection('services');
+        const reviewCollection = client.db('Travel').collection('reviews');
 
 
         // operation
@@ -45,6 +46,15 @@ async function run(){
             const service = await serviceCollection.findOne(query);
             res.send(service);
         });
+
+        // review
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        });
+        // 
+
 
 
 
